@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import dj_database_url
 from pathlib import Path
 import os 
 from dotenv import load_dotenv
@@ -79,19 +79,9 @@ WSGI_APPLICATION = 'python_heroku_task.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 
+DATABASE_URL = f"postgres://{os.environ.get('SUPABASE_USER')}:{os.environ.get('SUPABASE_PASSWORD')}@{os.environ.get('SUPABASE_HOST')}:6543/postgres?sslmode=verify-full" 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres.khqomlqgjftngsesnsce',
-        'HOST': os.environ.get('SUPABASE_HOST'),
-        'PASSWORD': os.environ.get('SUPABASE_PASSWORD'),
-        'PORT': '6543',
-        'OPTIONS':{
-            'sslmode': 'verify-full',
-            'sslrootcert': os.path.join(BASE_DIR,'prod-ca-2021.crt'),
-        }
-    }
+    'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600, ssl_require=True)
 }
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
